@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (function() {
+        // Prevent extension / interceptor errors when assigning to window.fetch
+        try {
+          var originalFetch = window.fetch ? window.fetch.bind(window) : function() {
+            return Promise.reject(new Error('Fetch not available'));
+          };
+          var currentFetch = originalFetch;
+
+          var descriptor = {
+            get: function() {
+              return currentFetch;
+            },
+            set: function(fn) {
+              currentFetch = typeof fn === 'function' ? fn : originalFetch;
+            },
+            configurable: true,
+            enumerable: true
+          };
+
+          try {
+            Object.defineProperty(window, 'fetch', descriptor);
+          } catch (e1) {
+            if (typeof Window !== 'undefined' && Window.prototype) {
+              try {
+                Object.defineProperty(Window.prototype, 'fetch', descriptor);
+              } catch (e2) {}
+            }
+          }
+        } catch (e) {}
+
+        // Suppress any remaining uncaught TypeError from extensions attempting to patch read-only fetch
+        window.addEventListener('error', function(event) {
+          if (
+            event &&
+            event.message &&
+            event.message.indexOf('Cannot set property fetch of') !== -1
+          ) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            return true;
+          }
+        }, true);
+      })();
+    </script>
+    <title>MissionPulse - Enterprise Project & Activity Management</title>
+    <meta name="description" content="Mission-based enterprise project management, daily activity tracking, progress validation, and Excel-style reporting platform." />
+    <meta property="og:title" content="MissionPulse - Enterprise Project & Activity Management" />
+    <meta property="og:description" content="Mission-based enterprise project management, daily activity tracking, progress validation, and Excel-style reporting platform." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

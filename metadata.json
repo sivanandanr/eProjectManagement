@@ -1,0 +1,6 @@
+{
+  "name": "MissionPulse - Enterprise Project & Activity Management",
+  "description": "Mission-based enterprise project management, daily activity tracking, progress validation, and Excel-style reporting platform.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
